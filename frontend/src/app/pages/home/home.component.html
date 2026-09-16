@@ -1,0 +1,37 @@
+<div class="page">
+  <app-navbar
+    [user]="currentUser()"
+    (logout)="logout()"
+  />
+
+  <main class="content">
+    <section class="welcome-card">
+      <div>
+        <span class="section-label">
+          Panel principal
+        </span>
+
+        <h1>
+          Bienvenido,
+          {{ currentUser()?.nombre }}
+        </h1>
+
+        <p>
+          Tu sesión se encuentra protegida mediante JWT.
+        </p>
+      </div>
+
+      <div class="counter">
+        <span>Usuarios registrados</span>
+        <strong>{{ users.length }}</strong>
+      </div>
+    </section>
+
+    <app-user-table
+      [users]="users"
+      [loading]="isLoading"
+      [errorMessage]="errorMessage"
+      (retry)="loadData()"
+    />
+  </main>
+</div>

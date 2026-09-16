@@ -1,0 +1,26 @@
+<header class="navbar">
+  <a
+    class="brand"
+    routerLink="/home"
+  >
+    <span class="brand-icon">AU</span>
+    <span>Sistema de usuarios</span>
+  </a>
+
+  <div class="user-section">
+    @if (user) {
+      <div class="user-information">
+        <strong>{{ user.nombre }}</strong>
+        <small>{{ user.email }}</small>
+      </div>
+    }
+
+    <button
+      type="button"
+      class="logout-button"
+      (click)="onLogout()"
+    >
+      Cerrar sesión
+    </button>
+  </div>
+</header>

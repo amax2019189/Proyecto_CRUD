@@ -1,0 +1,101 @@
+<div class="page">
+  <app-navbar
+    [user]="currentUser()"
+    (logout)="logout()"
+  ></app-navbar>
+
+  <main class="content">
+    <header class="page-header">
+      <div>
+        <span class="section-label">Inventario</span>
+        <h1>Productos</h1>
+        <p>Administra el catálogo disponible.</p>
+      </div>
+
+      <div class="counter">
+        <span>Total de productos</span>
+        <strong>{{ products.length }}</strong>
+      </div>
+    </header>
+
+    @if (formMessage) {
+      <div class="message">{{ formMessage }}</div>
+    }
+
+    <div class="products-layout">
+      <section class="form-card">
+        <span class="section-label">
+          {{ editingProductId === null ? 'Nuevo registro' : 'Edición' }}
+        </span>
+        <h2>
+          {{ editingProductId === null ? 'Agregar producto' : 'Editar producto' }}
+        </h2>
+
+        <form [formGroup]="productFrom" (ngSubmit)="submit()">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. Teclado mecánico"
+            />
+            @if (productFrom.controls.nombre.touched && productFrom.controls.nombre.invalid) {
+              <small>El nombre es obligatorio y admite hasta 100 caracteres.</small>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="precio">Precio</label>
+              <input
+                id="precio"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="precio"
+              />
+              @if (productFrom.controls.precio.touched && productFrom.controls.precio.invalid) {
+                <small>Ingresa un precio mayor o igual a cero.</small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="stock">Stock</label>
+              <input
+                id="stock"
+                type="number"
+                min="0"
+                step="1"
+                formControlName="stock"
+              />
+              @if (productFrom.controls.stock.touched && productFrom.controls.stock.invalid) {
+                <small>Ingresa una cantidad entera mayor o igual a cero.</small>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary-button" type="submit" [disabled]="isSubmiting">
+              {{ isSubmiting ? 'Guardando...' : editingProductId === null ? 'Crear producto' : 'Guardar cambios' }}
+            </button>
+
+            @if (editingProductId !== null) {
+              <button class="secondary-button" type="button" (click)="cancelEdit()">
+                Cancelar
+              </button>
+            }
+          </div>
+        </form>
+      </section>
+
+      <section class="table-card">
+        <div class="table-header">
+          <div>
+            <span class="section-label">Catálogo</span>
+            <h2>Productos registrados</h2>
+          </div>
+
+          <button class="refresh-button" type="button" (click)="loadProducts()">
+            Actualizar
+          </button>

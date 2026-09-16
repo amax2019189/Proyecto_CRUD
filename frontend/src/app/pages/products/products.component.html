@@ -1,0 +1,167 @@
+<div class="page">
+  <app-navbar
+    [user]="currentUser()"
+    (logout)="logout()"
+  />
+
+  <main class="content">
+    <header class="page-header">
+      <div>
+        <span class="section-label">Inventario</span>
+        <h1>Productos</h1>
+        <p>Administra el catálogo disponible.</p>
+      </div>
+
+      <div class="counter">
+        <span>Total de productos</span>
+        <strong>{{ products.length }}</strong>
+      </div>
+    </header>
+
+    @if (formMessage) {
+      <div class="message">{{ formMessage }}</div>
+    }
+
+    <div class="products-layout">
+      <section class="form-card">
+        <span class="section-label">
+          {{ editingProductId === null ? 'Nuevo registro' : 'Edición' }}
+        </span>
+        <h2>
+          {{ editingProductId === null ? 'Agregar producto' : 'Editar producto' }}
+        </h2>
+
+        <form [formGroup]="productForm" (ngSubmit)="submit()">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. Teclado mecánico"
+            />
+            @if (productForm.controls.nombre.touched && productForm.controls.nombre.invalid) {
+              <small>El nombre es obligatorio y admite hasta 100 caracteres.</small>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="precio">Precio</label>
+              <input
+                id="precio"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="precio"
+              />
+              @if (productForm.controls.precio.touched && productForm.controls.precio.invalid) {
+                <small>Ingresa un precio mayor o igual a cero.</small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="stock">Stock</label>
+              <input
+                id="stock"
+                type="number"
+                min="0"
+                step="1"
+                formControlName="stock"
+              />
+              @if (productForm.controls.stock.touched && productForm.controls.stock.invalid) {
+                <small>Ingresa una cantidad entera mayor o igual a cero.</small>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary-button" type="submit" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Guardando...' : editingProductId === null ? 'Crear producto' : 'Guardar cambios' }}
+            </button>
+
+            @if (editingProductId !== null) {
+              <button class="secondary-button" type="button" (click)="cancelEdit()">
+                Cancelar
+              </button>
+            }
+          </div>
+        </form>
+      </section>
+
+      <section class="table-card">
+        <div class="table-header">
+          <div>
+            <span class="section-label">Catálogo</span>
+            <h2>Productos registrados</h2>
+          </div>
+
+          <button class="refresh-button" type="button" (click)="loadProducts()">
+            Actualizar
+          </button>
+        </div>
+
+        @if (isLoading) {
+          <div class="state">Cargando productos...</div>
+        } @else if (errorMessage) {
+          <div class="state error-state">
+            <p>{{ errorMessage }}</p>
+            <button class="primary-button" type="button" (click)="loadProducts()">
+              Intentar nuevamente
+            </button>
+          </div>
+        } @else if (products.length === 0) {
+          <div class="state">
+            <strong>No hay productos registrados.</strong>
+            <p>Utiliza el formulario para agregar el primero.</p>
+          </div>
+        } @else {
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Registro</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (product of products; track product.id) {
+                  <tr>
+                    <td><span class="id-badge">#{{ product.id }}</span></td>
+                    <td><strong>{{ product.nombre }}</strong></td>
+                    <td>{{ product.precio | currency: 'USD' }}</td>
+                    <td>
+                      <span class="stock" [class.out-of-stock]="product.stock === 0">
+                        {{ product.stock }}
+                      </span>
+                    </td>
+                    <td>{{ product.created_at | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                      <div class="row-actions">
+                        <button class="edit-button" type="button" (click)="editProduct(product)">
+                          Editar
+                        </button>
+                        <button
+                          class="delete-button"
+                          type="button"
+                          [disabled]="deletingProductId === product.id"
+                          (click)="deleteProduct(product)"
+                        >
+                          {{ deletingProductId === product.id ? 'Eliminando...' : 'Eliminar' }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    </div>
+  </main>
+</div>

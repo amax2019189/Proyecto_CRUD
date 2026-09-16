@@ -1,0 +1,87 @@
+.auth-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 500px;
+  background: white;
+}
+
+.presentation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  color: white;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(96, 165, 250, 0.45),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #172554,
+      #1d4ed8
+    );
+}
+
+.presentation-content {
+  width: 100%;
+  max-width: 550px;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.presentation h1 {
+  margin: 0 0 20px;
+  font-size: clamp(40px, 5vw, 70px);
+  line-height: 1;
+}
+
+.presentation p {
+  max-width: 500px;
+  margin: 0;
+  color: #dbeafe;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.form-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 45px;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 410px;
+}
+
+@media (max-width: 900px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .presentation {
+    padding: 40px 25px;
+  }
+
+  .presentation h1 {
+    font-size: 38px;
+  }
+
+  .form-section {
+    padding: 45px 24px;
+  }
+}
